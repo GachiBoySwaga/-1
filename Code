@@ -1,0 +1,40 @@
+"""
+Моделирование вертикального пружинного маятника с затуханием
+Автор: [Ваше имя]
+Дата: [Дата]
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Параметры системы
+m = 0.12      # Масса (кг)
+c = 1.78e-2   # Коэффициент трения (кг/с)
+k = 1.184     # Жёсткость пружины (Н/м)
+x0 = 0.1      # Начальное смещение (м)
+v0 = 0        # Начальная скорость (м/с)
+
+# Дифференциальное уравнение системы
+def pendulum_system(t, y):
+    x, v = y
+    dxdt = v
+    dvdt = -(c/m)*v - (k/m)*x
+    return [dxdt, dvdt]
+
+# Решение системы уравнений
+sol = solve_ivp(pendulum_system, 
+                [0, 40],          # Временной интервал
+                [x0, v0],         # Начальные условия
+                t_eval=np.linspace(0, 40, 1000))
+
+# Визуализация результатов
+plt.figure(figsize=(10, 6))
+plt.plot(sol.t, sol.y[0], 'b-', label='Положение x(t)')
+plt.title('Затухающие колебания пружинного маятника')
+plt.xlabel('Время, t (с)')
+plt.ylabel('Положение, x(t) (м)')
+plt.grid(True)
+plt.legend()
+plt.savefig('pendulum_plot.png')  # Сохранение графика
+plt.show()
